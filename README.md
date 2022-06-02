@@ -24,4 +24,5 @@ Original speed is set to 40, we've been testing with 80. Increasing the speed fu
 ## Notes:
 - pip install pygame matplotlib ipython
 - pip3 install torch 
+
 Add --user to pip install command if installation fails. 

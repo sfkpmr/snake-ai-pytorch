@@ -9,17 +9,18 @@ Projektlänk: https://github.com/sfkpmr/snake-ai-pytorch
 
 ## Requirements:
 - Python
-- pygame
-- torch
-- matplotlib
-- ipython
+- Pygame
+- PyTorch
+- Matplotlib
+- IPython
+- NumPy
 
 ## Testing:
 Run python agent.py
 Tested with Python 3.
 
 ## Testing tips:
-Original speed is set to 40, we've been testing with 80. Increasing the speed further seems to have an adverse effect.
+Original speed is set to 40, we've used speed 80 during testing. Increasing the speed further seems to have an adverse effect.
 
 ## Notes:
 - pip install pygame matplotlib ipython

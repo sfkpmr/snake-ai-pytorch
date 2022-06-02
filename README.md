@@ -16,13 +16,13 @@ Projektlänk: https://github.com/sfkpmr/snake-ai-pytorch
 - NumPy
 
 ## Testing:
-Run python agent.py
+Run python agent.py  
 Tested with Python 3.
 
 ## Testing tips:
 Original speed is set to 40, we've used speed 80 during testing. Increasing the speed further seems to have an adverse effect.
 
-## Notes:
+## Install Instructions:
 - pip install pygame matplotlib ipython
 - pip3 install torch 
 

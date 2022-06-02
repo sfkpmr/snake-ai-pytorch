@@ -84,7 +84,7 @@ class SnakeGameAI:
         # 4. place new food or just move
         if self.head == self.food:
             self.score += 1
-            reward = 100
+            reward = 10
             self._place_food()
         else:
             self.snake.pop()
@@ -111,21 +111,21 @@ class SnakeGameAI:
     # OUR CODE
     def to_collision(self, temp_head: Point, update: Point):
         def _to_binary(steps: int):
-            if steps > 3:
-                return True, True, True
+            if steps >= 3:
+                return True, True
             if steps < 4:
                 steps += 32
             
             b = bin(steps).removeprefix('0b')
-            return bool(int(b[-3])), bool(int(b[-2])), bool(int(b[-1]))
+            return bool(int(b[-2])), bool(int(b[-1]))
 
         steps = 0
         while not self.is_collision(temp_head):
             # print(temp_head)
             steps += 1
             temp_head = Point(temp_head.x + update.x, temp_head.y + update.y)
-        a, b, c = _to_binary(steps)
-        return a, b, c, True if temp_head in self.snake[1:] else False
+        b, c = _to_binary(steps)
+        return b, c, True if temp_head in self.snake[1:] else False
         
 
     

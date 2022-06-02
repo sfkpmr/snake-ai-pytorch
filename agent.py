@@ -23,10 +23,6 @@ class Agent:
 
     def get_state(self, game):
         head = game.snake[0]
-        point_l = Point(head.x - 20, head.y)
-        point_r = Point(head.x + 20, head.y)
-        point_u = Point(head.x, head.y - 20)
-        point_d = Point(head.x, head.y + 20)
         
         dir_l = game.direction == Direction.LEFT
         dir_r = game.direction == Direction.RIGHT
@@ -34,10 +30,10 @@ class Agent:
         dir_d = game.direction == Direction.DOWN
 
         # OUR CODE
-        to_danger_l_1, to_danger_l_2, to_danger_l_3, border_or_snake_l = game.to_collision(head, Point(-20, 0))
-        to_danger_r_1, to_danger_r_2, to_danger_r_3, border_or_snake_r = game.to_collision(head, Point(20, 0))
-        to_danger_u_1, to_danger_u_2, to_danger_u_3, border_or_snake_u = game.to_collision(head, Point(0, -20))
-        to_danger_d_1, to_danger_d_2, to_danger_d_3, border_or_snake_d = game.to_collision(head, Point(0, 20))
+        to_danger_l_2, to_danger_l_3, border_or_snake_l = game.to_collision(head, Point(-20, 0))
+        to_danger_r_2, to_danger_r_3, border_or_snake_r = game.to_collision(head, Point(20, 0))
+        to_danger_u_2, to_danger_u_3, border_or_snake_u = game.to_collision(head, Point(0, -20))
+        to_danger_d_2, to_danger_d_3, border_or_snake_d = game.to_collision(head, Point(0, 20))
         # print(border_or_snake_l, border_or_snake_r, border_or_snake_u, border_or_snake_d)
         if dir_l:
             forward2 = to_danger_l_2
@@ -59,6 +55,7 @@ class Agent:
             right2 = to_danger_d_2
             right3 = to_danger_d_3
             border_or_snake_r2 = border_or_snake_d
+
         elif dir_u:
             forward2 = to_danger_u_2
             forward3 = to_danger_u_3
@@ -153,16 +150,11 @@ def train():
     while True:
         # get old state
         state_old = agent.get_state(game)
-        
-
         # get move
         final_move = agent.get_action(state_old)
-        
         # perform move and get new state
         reward, done, score = game.play_step(final_move)
-        
         state_new = agent.get_state(game)
-        
         # train short memory
         agent.train_short_memory(state_old, final_move, reward, state_new, done)
 

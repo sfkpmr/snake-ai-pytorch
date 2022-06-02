@@ -17,7 +17,7 @@ class Agent:
         self.epsilon = 0 # randomness
         self.gamma = 0.9 # discount rate
         self.memory = deque(maxlen=MAX_MEMORY) # popleft()
-        self.model = Linear_QNet(11, 256, 3)
+        self.model = Linear_QNet(17, 256, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
 
@@ -33,38 +33,81 @@ class Agent:
         dir_u = game.direction == Direction.UP
         dir_d = game.direction == Direction.DOWN
 
+        # OUR CODE
+        to_danger_l_1, to_danger_l_2, to_danger_l_3, border_or_snake_l = game.to_collision(head, Point(-20, 0))
+        to_danger_r_1, to_danger_r_2, to_danger_r_3, border_or_snake_r = game.to_collision(head, Point(20, 0))
+        to_danger_u_1, to_danger_u_2, to_danger_u_3, border_or_snake_u = game.to_collision(head, Point(0, -20))
+        to_danger_d_1, to_danger_d_2, to_danger_d_3, border_or_snake_d = game.to_collision(head, Point(0, 20))
+        # print(border_or_snake_l, border_or_snake_r, border_or_snake_u, border_or_snake_d)
+        if dir_l:
+            forward2 = to_danger_l_2
+            forward3 = to_danger_l_3
+            border_or_snake_f = border_or_snake_l
+            left2 = to_danger_d_2
+            left3 = to_danger_d_3
+            border_or_snake_l2 = border_or_snake_d
+            right2 = to_danger_u_2
+            right3 = to_danger_u_3
+            border_or_snake_r2 = border_or_snake_u
+        elif dir_r:
+            forward2 = to_danger_r_2
+            forward3 = to_danger_r_3
+            border_or_snake_f = border_or_snake_r
+            left2 = to_danger_u_2
+            left3 = to_danger_u_3
+            border_or_snake_l2 = border_or_snake_u
+            right2 = to_danger_d_2
+            right3 = to_danger_d_3
+            border_or_snake_r2 = border_or_snake_d
+        elif dir_u:
+            forward2 = to_danger_u_2
+            forward3 = to_danger_u_3
+            border_or_snake_f = border_or_snake_u
+            left2 = to_danger_l_2
+            left3 = to_danger_l_3
+            border_or_snake_l2 = border_or_snake_l
+            right2 = to_danger_r_2
+            right3 = to_danger_r_3
+            border_or_snake_r2 = border_or_snake_r
+        else:
+            forward2 = to_danger_d_2
+            forward3 = to_danger_d_3
+            border_or_snake_f = border_or_snake_d
+            left2 = to_danger_r_2
+            left3 = to_danger_r_3
+            border_or_snake_l2 = border_or_snake_r
+            right2 = to_danger_l_2
+            right3 = to_danger_l_3
+            border_or_snake_r2 = border_or_snake_l
+        
+
         state = [
-            # Danger straight
-            (dir_r and game.is_collision(point_r)) or 
-            (dir_l and game.is_collision(point_l)) or 
-            (dir_u and game.is_collision(point_u)) or 
-            (dir_d and game.is_collision(point_d)),
-
-            # Danger right
-            (dir_u and game.is_collision(point_r)) or 
-            (dir_d and game.is_collision(point_l)) or 
-            (dir_l and game.is_collision(point_u)) or 
-            (dir_r and game.is_collision(point_d)),
-
-            # Danger left
-            (dir_d and game.is_collision(point_r)) or 
-            (dir_u and game.is_collision(point_l)) or 
-            (dir_r and game.is_collision(point_u)) or 
-            (dir_l and game.is_collision(point_d)),
-            
             # Move direction
             dir_l,
             dir_r,
             dir_u,
             dir_d,
-            
-            # Food location 
+
+            # Food location
             game.food.x < game.head.x,  # food left
             game.food.x > game.head.x,  # food right
             game.food.y < game.head.y,  # food up
-            game.food.y > game.head.y  # food down
-            ]
+            game.food.y > game.head.y,  # food down
 
+            # forward danger
+            forward2,
+            forward3,
+            border_or_snake_f,
+            # left danger
+            left2,
+            left3,
+            border_or_snake_l2,
+            # right danger
+            right2,
+            right3,
+            border_or_snake_r2
+        ]
+        
         return np.array(state, dtype=int)
 
     def remember(self, state, action, reward, next_state, done):
@@ -110,14 +153,16 @@ def train():
     while True:
         # get old state
         state_old = agent.get_state(game)
+        
 
         # get move
         final_move = agent.get_action(state_old)
-
+        
         # perform move and get new state
         reward, done, score = game.play_step(final_move)
+        
         state_new = agent.get_state(game)
-
+        
         # train short memory
         agent.train_short_memory(state_old, final_move, reward, state_new, done)
 

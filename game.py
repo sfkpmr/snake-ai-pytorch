@@ -1,3 +1,6 @@
+# @author Simon Eklundh
+# @author Max Nyström
+# @author Marcus Wallén
 import pygame
 import random
 from enum import Enum
@@ -24,7 +27,7 @@ BLUE2 = (0, 100, 255)
 BLACK = (0,0,0)
 
 BLOCK_SIZE = 20
-SPEED = 80
+SPEED = 80 # movement speed, default was 40, faster than 80 gives poor performance
 
 class SnakeGameAI:
 
@@ -126,7 +129,7 @@ class SnakeGameAI:
             temp_head = Point(temp_head.x + update.x, temp_head.y + update.y)
         b, c = _to_binary(steps)
         return b, c, True if temp_head in self.snake[1:] else False
-        
+        # END OUR CODE
 
     
 

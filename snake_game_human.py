@@ -1,3 +1,6 @@
+# @author Simon Eklundh
+# @author Max Nyström
+# @author Marcus Wallén
 import pygame
 import random
 from enum import Enum
